@@ -1,8 +1,8 @@
 #include "OSCharBuffer.h"
 #include <string.h>
 
-#define DEFAULT_BUFFER_SIZE 100
-#define DEFAULT_GROWTH_INCREMENT 50
+#define DEFAULT_BUFFER_SIZE 300
+#define DEFAULT_GROWTH_INCREMENT 300
 
 OSCharBuffer::OSCharBuffer()
 {
