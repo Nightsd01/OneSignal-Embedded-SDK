@@ -19,23 +19,25 @@ OSAudience::OSAudience(std::vector<char *> includedSegments, std::vector<char *>
     _excludedSegments = excludedSegments;
 }
 
-bool OSAudience::validAudience()
+bool OSAudience::requiresApiKey()
 {
-    return (_playerIds.size() > 0 || _includedSegments.size() > 0);
+    return _includedSegments.size() > 0;
 }
 
-void OSAudience::buildAudienceJson(OSCharBuffer *buf) 
+void OSAudience::validAudience(char **error)
+{
+    if (_playerIds.size() == 0 && _includedSegments.size() == 0)
+        *error = "Audience must include at least one player ID or segment";
+}
+
+void OSAudience::buildAudienceJson(OSJSONBuilder &builder)
 {
     if (_playerIds.size() > 0) {
-        buf->addText("\"include_player_ids\":");
-        buildJsonArray(_playerIds, buf);
+        builder.addJSONArray("include_player_ids", _playerIds);
     } else {
-        buf->addText("\"included_segments\":");
-        buildJsonArray(_includedSegments, buf);
+        builder.addJSONArray("included_segments", _includedSegments);
 
-        if (_excludedSegments.size() > 0) {
-            buf->addText("\"excluded_segments\":");
-            buildJsonArray(_excludedSegments, buf);
-        }
+        if (_excludedSegments.size() > 0)
+            builder.addJSONArray("excluded_segments", _excludedSegments);
     }
 }

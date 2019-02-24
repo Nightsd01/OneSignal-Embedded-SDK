@@ -12,13 +12,19 @@ enum JSONValueType
     ScalarType
 };
 
-// Adds a single key/value JSON property to the OSCharBuffer
-void addJsonValue(JSONValueType type, char *property, char *value, OSCharBuffer *buf, bool beginning = false);
+namespace JSONHelper 
+{
+    // Adds a single key/value JSON property to the OSCharBuffer
+    void addJSONValue(JSONValueType type, char *property, char *value, OSCharBuffer &buf, bool beginning = false);
 
-// The string returned by this function must be free'd after use
-char* singleValueJsonObject(char *property, char *value, JSONValueType type);
+    // Adds a single-key JSON object to the buffer
+    void addSinglePropertyJSONObject(char *property, char *subProperty, char *subValue, OSCharBuffer &buf, JSONValueType type, bool beginning = false);
 
-// Adds a JSON array of strings to the OSCharBuffer
-void buildJsonArray(std::vector<char *> values, OSCharBuffer *buf);
+    // Adds a JSON array of strings to the OSCharBuffer
+    void addJSONArray(std::vector<char *> values, OSCharBuffer &buf);
+
+    // Adds a property before a value, ie: "json_property" : 
+    void addPropertyToBuffer(char *property, OSCharBuffer &buf, bool beginning);
+}
 
 #endif

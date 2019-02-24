@@ -6,12 +6,30 @@
 
 OSCharBuffer::OSCharBuffer()
 {
-    stringBuffer = (char*)calloc(DEFAULT_BUFFER_SIZE, sizeof(char));
+    stringBuffer = (char *)calloc(DEFAULT_BUFFER_SIZE, sizeof(char));
     size = DEFAULT_BUFFER_SIZE;
     index = 0;
+
+    // check if allocation failed, not enough memory
+    if (stringBuffer == NULL) 
+        size = 0; 
 }
 
-bool OSCharBuffer::growBuffer(char *text, size_t addSize)
+// This is expensive and should be avoided, always use pass by reference with the char buffer
+OSCharBuffer::OSCharBuffer(OSCharBuffer const & other)
+{
+    stringBuffer = (char *)malloc(other.size * sizeof(char));
+    size = other.size;
+    index = other.index;
+    memcpy(stringBuffer, other.stringBuffer, strlen(other.stringBuffer) * sizeof(char));
+}
+
+OSCharBuffer::~OSCharBuffer()
+{
+    free(stringBuffer);
+}
+
+bool OSCharBuffer::growBuffer(size_t addSize)
 {
     size_t newSize = (addSize * sizeof(char)) + (size * sizeof(char));
 
@@ -37,7 +55,7 @@ bool OSCharBuffer::addText(char *text)
             growTo = newTextSize - freeSpace + DEFAULT_GROWTH_INCREMENT;
         
 
-        succeeded = growBuffer(text, growTo);
+        succeeded = growBuffer(growTo);
 
         if (!succeeded) 
             return false;

@@ -3,9 +3,7 @@
 #ifndef OSESP8266CLIENT_H 
 #define OSESP8266CLIENT_H
 
-#include <Arduino.h>
-
-String syncMakePOSTRequest(String address, String body, String apiKey);
+const char* syncMakePOSTRequest(char *address, char *body, char *apiKey);
 
 #endif
 #endif

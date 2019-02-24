@@ -2,7 +2,7 @@
 #define OSNOTIFICATION_H
 
 #include "OSAudience.h"
-#include "OSCharBuffer.h"
+#include "OSJSONBuilder.h"
 
 class OSNotification 
 {
@@ -11,7 +11,9 @@ class OSNotification
 
         // The string returned from this function must be free'd once
         // it has been used
-        char* buildNotificationJson(char *appId, OSAudience audience);
+        void buildNotificationJson(char *appId, OSAudience &audience, OSJSONBuilder &builder);
+
+        void validNotification(char **error);
 
         char *contents;
         char *headings;
@@ -49,9 +51,6 @@ class OSNotification
          * ie. [{"id" : "button1", "text" : "Test Button"}]
         */
         char *buttons;
-    
-    private:
-        OSCharBuffer buf;
 };
 
 #endif

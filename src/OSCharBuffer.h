@@ -7,13 +7,14 @@
 // to build up the JSON payload rather than generating large
 // numbers of temporary strings
 
-// NOTE: The OSCharBuffer's stringBuffer is manually allocated memory 
-//and must be free'd by the owner of the char buffer
-
 class OSCharBuffer 
 {
     public:
         OSCharBuffer();
+        ~OSCharBuffer();
+
+        // Copying is expensive and should be avoided, always pass by reference with the char buffer
+        OSCharBuffer(OSCharBuffer const & other);
 
         // Concatenates the string buffer with the passed in text
         // Returns a boolean indicating if the operation was successful
@@ -23,7 +24,7 @@ class OSCharBuffer
         char *stringBuffer;
     
     private:
-        bool growBuffer(char *text, size_t addSize);
+        bool growBuffer(size_t addSize);
 
         // Represents the number of characters the char buffer can contain
         size_t size;

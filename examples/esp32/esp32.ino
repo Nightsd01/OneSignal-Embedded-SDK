@@ -3,16 +3,19 @@
 #include <WiFiMulti.h>
 #include <OneSignal.h>
 
+// Replace with your own OneSignal App ID
 #define OS_APP_ID "YOUR_ONESIGNAL_APP_ID_HERE"
-#define OS_API_KEY "YOUR_ONESIGNAL_API_KEY_HERE"
 
 // Run your app and put your own player ID here for testing
 #define OS_USER_ID "YOUR_ONESIGNAL_USER_ID"
 
+// Your wifi network name 
 #define WIFI_SSID "example_wifi_network"
+
+// Your wifi network password
 #define WIFI_PASSPHRASE "example_wifi_passphrase"
 
-OneSignal onesignal(OS_APP_ID, OS_API_KEY);
+OneSignal onesignal(OS_APP_ID);
 
 WiFiMulti wifiMulti;
 

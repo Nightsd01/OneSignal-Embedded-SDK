@@ -15,13 +15,21 @@
 class OneSignal
 {
     private:
-        char *_appId;
-        char *_apiKey;
+        char *_appId = NULL;
+        char *_apiKey = NULL;
 
     public:
+        // NOTE: The API key is like a password and should never be publicly disclosed
         OneSignal(char *appId, char *apiKey);
-        String sendNotificationToAudience(OSNotification notification, OSAudience audience);
-        String sendNotificationToPlayerId(char *playerId, OSNotification notification);
+
+        // If you know exactly what player ID's you will use to push to, you do not need the API key
+        OneSignal(char *appId);
+
+        // Sends the notification to a given audience 
+        const char* sendNotificationToAudience(OSNotification &notification, OSAudience &audience);
+
+        // Convenience function to send the notification to a specific device
+        const char* sendNotificationToPlayerId(char *playerId, OSNotification &notification);
 };
 
 #endif

@@ -19,77 +19,66 @@ OSNotification::OSNotification()
     androidLargeIcon = NULL;
 }
 
+void OSNotification::validNotification(char **error)
+{
+    if (contents == NULL && !contentAvailable)
+        *error = "Notification must include contents, or if you are sending a silent notification, contentAvailable must be set to TRUE";
+}
+
 // Due to the severe memory constraints of embedded platforms like ESP8266,
 // we build a JSON string directly instead of using a JSON library
 
 // TODO: addJsonValue() returns a boolean indicating if the 
 // operation was successful. This builder should start checking
 // this return value and failing if it is false
-char* OSNotification::buildNotificationJson(char *appId, OSAudience audience) 
+void OSNotification::buildNotificationJson(char *appId, OSAudience &audience, OSJSONBuilder &builder)
 {
-    buf.addText("{");
-    
     if (language == NULL) 
         language = "en";
     
-    addJsonValue(StringType, "app_id", appId, &buf, true);
+    builder.addJSONValue(StringType, "app_id", appId);
 
-    buf.addText(",");
+    audience.buildAudienceJson(builder);
 
-    audience.buildAudienceJson(&buf);
+    if (contents != NULL)
+        builder.addSinglePropertyJSONObject("contents", language, contents, StringType);
 
-    if (contents != NULL) {
-        char *contentsJson = singleValueJsonObject(language, contents, StringType);
-        addJsonValue(ObjectType, "contents", contentsJson, &buf);
-        free(contentsJson);
-    }
+    if (headings != NULL)
+        builder.addSinglePropertyJSONObject("headings", language, headings, StringType);
 
-    if (headings != NULL) {
-        char *headingsJson = singleValueJsonObject(language, headings, StringType);
-        addJsonValue(ObjectType, "headings", headingsJson, &buf);
-        free(headingsJson);
-    }
-
-    if (subtitle != NULL) {
-        char *subtitleJson = singleValueJsonObject(language, subtitle, StringType);
-        addJsonValue(ObjectType, "subtitle", subtitleJson, &buf);
-        free(subtitleJson);
-    }
+    if (subtitle != NULL)
+        builder.addSinglePropertyJSONObject("subtitle", language, subtitle, StringType);
 
     if (mutableContent)
-        addJsonValue(ScalarType, "mutable_content", "1", &buf);
+        builder.addJSONValue(ScalarType, "mutable_content", "1");
 
     if (contentAvailable)
-        addJsonValue(ScalarType, "content_available", "1", &buf);
+        builder.addJSONValue(ScalarType, "content_available", "1");
     
     if (url != NULL)
-        addJsonValue(StringType, "url", url, &buf);
+        builder.addJSONValue(StringType, "url", url);
 
     if (androidBigPicture != NULL)
-        addJsonValue(StringType, "big_picture", androidBigPicture, &buf);
+        builder.addJSONValue(StringType, "big_picture", androidBigPicture);
 
     if (iosCategory != NULL)
-        addJsonValue(StringType, "ios_category", iosCategory, &buf);
+        builder.addJSONValue(StringType, "ios_category", iosCategory);
     
     if (sendAfter != NULL)
-        addJsonValue(StringType, "send_after", sendAfter, &buf);
+        builder.addJSONValue(StringType, "send_after", sendAfter);
     
     if (data != NULL)
-        addJsonValue(ObjectType, "data", data, &buf);
+        builder.addJSONValue(ObjectType, "data", data);
     
     if (iosAttachments != NULL)
-        addJsonValue(ObjectType, "ios_attachments", iosAttachments, &buf);
+        builder.addJSONValue(ObjectType, "ios_attachments", iosAttachments);
     
     if (buttons != NULL) 
-        addJsonValue(ObjectType, "buttons", buttons, &buf);
+        builder.addJSONValue(ObjectType, "buttons", buttons);
 
     if (androidSmallIcon != NULL)
-        addJsonValue(ObjectType, "small_icon", androidSmallIcon, &buf);
+        builder.addJSONValue(StringType, "small_icon", androidSmallIcon);
     
     if (androidLargeIcon != NULL)
-        addJsonValue(ObjectType, "large_icon", androidLargeIcon, &buf);
-
-    buf.addText("}");
-
-    return buf.stringBuffer;
+        builder.addJSONValue(StringType, "large_icon", androidLargeIcon);
 }

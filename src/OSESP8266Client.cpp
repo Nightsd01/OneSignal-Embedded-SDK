@@ -3,20 +3,20 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-String syncMakePOSTRequest(String address, String body, String apiKey) 
+const char* syncMakePOSTRequest(char *address, char *body, char *apiKey) 
 {
     if (WiFi.status() != WL_CONNECTED) {
         return "Not connected to the internet";
     }
 
     HTTPClient client;
-    client.begin(address);
-    client.addHeader("Authorization", "Basic " + apiKey);
+    client.begin(String(address));
+    client.addHeader("Authorization", "Basic " + String(apiKey));
     client.addHeader("Content-Type", "application/json");
     
-    client.POST(body);
+    client.POST(String(body));
 
-    String response = client.getString();
+    char *response = client.getString().c_str();
 
     client.end();
 

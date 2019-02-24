@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <stdlib.h>
-#include "OSCharBuffer.h"
+#include "OSJSONBuilder.h"
 
 class OSAudience 
 {
@@ -12,9 +12,11 @@ class OSAudience
         OSAudience(std::vector<char *> playerIds);
         OSAudience(std::vector<char *> includedSegments, std::vector<char *> excludedSegments);
 
-        bool validAudience();
+        bool requiresApiKey();
+
+        void validAudience(char **error);
         
-        void buildAudienceJson(OSCharBuffer *buf);
+        void buildAudienceJson(OSJSONBuilder &builder);
 
     private:
         std::vector<char *> _playerIds;
